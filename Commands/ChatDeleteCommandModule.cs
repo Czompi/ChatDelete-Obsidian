@@ -1,12 +1,8 @@
 ﻿using hu.czompi.chatdelete;
 using Newtonsoft.Json;
-using Obsidian.Chat;
-using Obsidian.CommandFramework.Attributes;
-using Obsidian.CommandFramework.Entities;
-using Obsidian.Commands;
-using Obsidian.Entities;
-using Obsidian.Util;
-using Obsidian.WorldData;
+using Obsidian.API;
+using Obsidian.API.CommandFramework.Attributes;
+using Obsidian.API.CommandFramework.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,22 +14,30 @@ namespace hu.czompi.chatdelete.commands
 {
     public class ChatDeleteCommandModule : BaseCommandClass
     {
-        [Command("cd", "chatdelete", "chatclear","cc")]
+		
+        #region chatdelete
+        [Command("chatdelete", "cd", "chatclear", "cc")]
         [RequireOperator]
-        public async Task ChatDeleteAsync(ObsidianContext Context, EChatDeleteArguments arg0)
+        public async Task ChatDeleteAsync(ObsidianContext Context, string arg0="")
         {
             var player = Context.Player;
 
             var chatMessage = new ChatMessage();
-            switch (arg0)
+            var prefix = "&8[&b ChatDelete &8]&r ";
+            prefix = prefix.Replace("&", "§");
+            switch (arg0.ToString().ToLower())
             {
-                case EChatDeleteArguments.Delete:
-                case EChatDeleteArguments.Clear:
-                case EChatDeleteArguments.C:
-                    var clr_msg = Globals.Config.Messages.Clear.Split("{0}");
-                    chatMessage = new ChatMessage();
-                    chatMessage.AddExtra(new ChatMessage { Text = $"{clr_msg[0]}" });
-                    //chatMessage.AddExtra(new ChatMessage { Text = $"{ChatColor.Gray}Chat successfully deleted by " });
+                case "delete":
+                    var clear = "";
+                    for (int i = 0; i < 100; i++)
+                    {
+                        clear += "\n";
+                    }
+                    Context.Server.BroadcastAsync(clear);
+                    //var clr_msg = Globals.Config.Messages.Clear.Split("{0}");
+                    chatMessage = ChatMessage.Simple("");
+                    //chatMessage.AddExtra(new ChatMessage { Text = $"{clr_msg[0]}" });
+                    chatMessage.AddExtra(new ChatMessage { Text = $"{prefix}{ChatColor.Gray}Chat successfully deleted by " });
                     var user = new ChatMessage
                     {
                         Text = $"{ChatColor.Red}{player.Username}{ChatColor.Gray}",
@@ -44,12 +48,15 @@ namespace hu.czompi.chatdelete.commands
                         }
                     };
                     chatMessage.AddExtra(user);
-                    chatMessage.AddExtra(new ChatMessage { Text = $"{clr_msg[1]}" });
-                    //chatMessage.AddExtra(new ChatMessage { Text = $"{ChatColor.Gray}." });
-
-                    await Context.Server.BroadcastAsync(JsonConvert.SerializeObject(chatMessage));
+                    //chatMessage.AddExtra(new ChatMessage { Text = $"{clr_msg[1]}" });
+                    chatMessage.AddExtra(new ChatMessage { Text = $"{ChatColor.Gray}." });
+                    foreach (var onlinePlayer in Context.Server.OnlinePlayers)
+                    {
+                        await Context.Server.OnlinePlayers[onlinePlayer.Key].SendMessageAsync(chatMessage);
+                    }
                     break;
-                case EChatDeleteArguments.Help:
+                default:
+                case "help":
                     #region Command list
                     var cmds = new Dictionary<String, String>();
                     cmds.Add("help", "Shows this list.");
@@ -58,8 +65,9 @@ namespace hu.czompi.chatdelete.commands
                     cmds.Add("reload", "Reload plugin configuration.");
                     #endregion
 
-                    chatMessage = new ChatMessage();
-                    chatMessage.AddExtra(new ChatMessage { Text = $"{Globals.Config.Prefix}{ChatColor.Gray}Plugin commands:" });
+                    chatMessage = ChatMessage.Simple("");
+                    //chatMessage.AddExtra(new ChatMessage { Text = $"{Globals.Config.Prefix}{ChatColor.Gray}Plugin commands:" });
+                    chatMessage.AddExtra(new ChatMessage { Text = $"{prefix}{ChatColor.Gray}Plugin commands:\n" });
 
                     #region Build per command message.
                     for (int i = 0; i < cmds.Count; i++)
@@ -68,35 +76,30 @@ namespace hu.czompi.chatdelete.commands
                         var cmdargname = new ChatMessage
                         {
                             Text = $"{ChatColor.Red}/chatdelete {cmd.Key}{ChatColor.Reset} ",
-                            HoverEvent = new TextComponent
+                            ClickEvent = new TextComponent
                             {
-                                Action = ETextAction.ShowText,
-                                Value = $"{DateTime.Now.ToShortDateString()}"
+                                Action = ETextAction.SuggestCommand,
+                                Value = $"/chatdelete {cmd.Key}"
                             }
                         };
                         chatMessage.AddExtra(cmdargname);
                         var cmdargdesc = new ChatMessage
                         {
-                            Text = $"{ChatColor.Gray}{cmd.Value}{ChatColor.Reset}\n",
-                            HoverEvent = new TextComponent
-                            {
-                                Action = ETextAction.ShowText,
-                                Value = $"{DateTime.Now.ToShortDateString()}"
-                            }
+                            Text = $"{ChatColor.Gray}{cmd.Value}{ChatColor.Reset}{(i+1==cmds.Count ? "":"\n")}"
                         };
                         chatMessage.AddExtra(cmdargdesc);
                     }
                     #endregion
-
+                    await Context.Player.SendMessageAsync(chatMessage);
                     break;
-                case EChatDeleteArguments.Reload:
+                case "reload":
 
 
-                    break;
-                default:
                     break;
             }
 
         }
-    }
+        #endregion
+
+	}
 }

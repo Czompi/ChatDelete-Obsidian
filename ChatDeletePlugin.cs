@@ -21,7 +21,7 @@ namespace hu.czompi.chatdelete
         // One of server messages, called when an event occurs
         public async Task OnLoad(IServer server)
         {
-            server.RegisterCommandClass<ChatDeleteCommandModule>();
+            //server.RegisterCommandClass<ChatDeleteCommandModule>();
             Config = new Config();
             Config.ReloadConfig();
             Logger.Log("ChatDelete loaded!");

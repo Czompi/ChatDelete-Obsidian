@@ -1,28 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
+		<Configurations>Debug;Release;Snapshot</Configurations>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Commands\ChatDeleteCommandModule.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Commands\ChatDeleteCommandModule.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>..\..\GitHub.Naamloos\Obsidian\bin\Debug\netcoreapp3.1\Server-0\plugins\</OutputPath>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Reference Include="Obsidian.API">
-			<HintPath>..\..\GitHub.Naamloos\Obsidian\Obsidian.API\bin\Debug\netcoreapp3.1\Obsidian.API.dll</HintPath>
-		</Reference>
-		<Reference Include="Obsidian.CommandFramework">
-			<HintPath>..\..\GitHub.Naamloos\Obsidian\Obsidian.CommandFramework\bin\Debug\netcoreapp3.1\Obsidian.CommandFramework.dll</HintPath>
-		</Reference>
+		<PackageReference Include="Obsidian.API" Version="1.0.110" />
 	</ItemGroup>
 
 
