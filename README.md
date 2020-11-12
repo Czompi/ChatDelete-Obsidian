@@ -6,4 +6,4 @@ Make chat cleaner with one easy to remember command.
 - `/chatdelete reload` - Reloads the config.
 - `/chatdelete help` - Show available arguments.
 
-This plugin is written using [Obisdian.API](https://github.com/Naamloos/Obsidian/Obisdian.API) for [Obsidian](https://github.com/Naamloos/Obsidian) servers.
+This plugin is written using [Obisdian.API](https://github.com/ObsidianServer/Obsidian/Obisdian.API) for [Obsidian](https://github.com/ObsidianServer/Obsidian) servers.
