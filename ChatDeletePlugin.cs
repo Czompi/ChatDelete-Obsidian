@@ -12,17 +12,16 @@ namespace hu.czompi.chatdelete
             ProjectUrl = "https://github.com/Czompi/ChatDelete-Obsidian")]
     public class ChatDeletePlugin : PluginBase
     {
-        // Any interface from Obsidian.Plugins.Services can be injected into properties
         [Inject] public ILogger Logger { get; set; }
         [Inject] public IFileReader FileReader { get; set; }
         [Inject] public IFileWriter FileWriter { get; set; }
-        internal Config Config { get; private set; }
+        
+        internal ConfigManager Config { get; private set; }
 
-        // One of server messages, called when an event occurs
         public async Task OnLoad(IServer server)
         {
-            server.RegisterCommandClass<ChatDeleteCommandModule>();
-            Config = new Config();
+            //server.<ChatDeleteCommandModule>();
+            Config = new ConfigManager(this);
             Config.ReloadConfig();
             Logger.Log("ChatDelete loaded!");
             await Task.CompletedTask;
@@ -32,16 +31,5 @@ namespace hu.czompi.chatdelete
         {
             await Task.CompletedTask;
         }
-    }
-
-
-
-    public class MyWrapper : PluginWrapper
-    {
-        public Action Step { get; set; }
-        [Alias("get_StepCount")] private Func<int> GetStepCount { get; set; }
-        [Alias("set_StepCount")] private Action<int> SetStepCount { get; set; }
-
-        public int StepCount { get => GetStepCount(); set => SetStepCount(value); }
     }
 }

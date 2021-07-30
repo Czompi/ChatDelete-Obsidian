@@ -2,13 +2,14 @@
 {
     public class ConfigFile
     {
-        private string _prefix;
+        public string Prefix { get; set; }
+        //{
+        //    get => .Replace("&","§");
+        //    set => _prefix = value;
+        //}
 
-        public string Prefix
-        {
-            get => _prefix.Replace("&","§");
-            set => _prefix = value;
-        }
+        public int LineCount { get; set; }
+
         public Messages Messages { get; set; }
     }
 

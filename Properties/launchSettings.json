@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ChatDelete": {
+      "commandName": "Executable",
+      "executablePath": "P:\\GitHub.ObsidianMC\\Obsidian\\Obsidian\\bin\\Debug\\net5.0\\Obsidian.exe",
+      "workingDirectory": "P:\\GitHub.ObsidianMC\\Obsidian\\Obsidian\\bin\\Debug\\net5.0"
+    }
+  }
+}

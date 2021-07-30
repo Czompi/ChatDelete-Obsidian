@@ -1,28 +1,47 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
+using System.Text.Json;
 
 namespace hu.czompi.chatdelete
 {
-    internal class Config: ConfigFile
+    internal class ConfigManager : ConfigFile
     {
-        public int LineCount { get; internal set; }
+
+
+        public ChatDeletePlugin Plugin { get; }
+
+        internal ConfigManager(ChatDeletePlugin plugin) => Plugin = plugin;
 
         internal void LoadConfig()
         {
-            Globals.Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(Path.Combine("ChatDelete", "config.json")));
+            Globals.Config = JsonSerializer.Deserialize<ConfigFile>(Plugin.FileReader.ReadAllText(Path.Combine("ChatDelete", "config.json")));
         }
 
         internal void ReloadConfig()
         {
-            SaveDefaultConfig();
-            LoadConfig();
+            try
+            {
+                SaveDefaultConfig();
+            }
+            catch (System.Exception ex)
+            {
+                Plugin.Logger.LogError(ex);
+            }
+
+            try
+            {
+                LoadConfig();
+            }
+            catch (System.Exception ex)
+            {
+                Plugin.Logger.LogError(ex);
+            }
         }
 
         internal void SaveDefaultConfig()
         {
             if (!File.Exists(Path.Combine("ChatDelete", "config.json")))
             {
-                Globals.Config = new Config
+                Globals.Config = new ConfigFile
                 {
                     Prefix = "&8[&b ChatDelete &8]&r ",
                     LineCount = 100,
@@ -33,6 +52,7 @@ namespace hu.czompi.chatdelete
                         Usage = "&4Command usage:&r &c{0}&r"
                     }
                 };
+                Plugin.FileWriter.WriteAllText(Path.Combine("ChatDelete", "config.json"), JsonSerializer.Serialize(Globals.Config));
             }
         }
     }

@@ -1,27 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<PreserveCompilationContext>false</PreserveCompilationContext>
+		<LangVersion>Preview</LangVersion>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>..\..\GitHub.Naamloos\Obsidian\bin\Debug\netcoreapp3.1\Server-0\plugins\</OutputPath>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-	</PropertyGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<!--<Move SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)..\..\$(AssemblyName)-$(Configuration.ToLower()).pdb" />-->
+		<Move SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)..\..\$(AssemblyName.ToLower())-$(Version)-$(Configuration.ToLower()).dll" />
+		<Copy SourceFiles="$(OutputPath)..\..\$(AssemblyName.ToLower())-$(Version)-$(Configuration.ToLower()).dll" DestinationFiles="$(OutputPath)..\..\..\..\..\GitHub.ObsidianMC\Obsidian\Obsidian\$(OutDir)\Server-0\plugins\$(OutDir.Split(Path.DirectorySeparatorChar)[2])\$(AssemblyName.ToLower())-$(Version)-$(Configuration.ToLower()).dll" />
+	</Target>
 
 	<ItemGroup>
 		<Reference Include="Obsidian.API">
-			<HintPath>..\..\GitHub.Naamloos\Obsidian\Obsidian.API\bin\Debug\netcoreapp3.1\Obsidian.API.dll</HintPath>
-		</Reference>
-		<Reference Include="Obsidian.CommandFramework">
-			<HintPath>..\..\GitHub.Naamloos\Obsidian\Obsidian.CommandFramework\bin\Debug\netcoreapp3.1\Obsidian.CommandFramework.dll</HintPath>
+			<HintPath>..\..\GitHub.ObsidianMC\Obsidian\Obsidian.API\bin\Debug\net5.0\Obsidian.API.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 

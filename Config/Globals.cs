@@ -2,6 +2,7 @@
 {
     internal class Globals
     {
-        public static Config Config { get; internal set; }
+        public static ConfigManager ConfigManager { get; internal set; }
+        public static ConfigFile Config { get; internal set; }
     }
 }
